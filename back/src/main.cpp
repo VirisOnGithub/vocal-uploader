@@ -16,7 +16,7 @@
 int main(int argc, char **argv)
 {
     sql::mysql::MySQL_Driver driver;
-    sql::Connection *connection = driver.connect("tcp://127.0.0.1:3306", "root", "2487169350");
+    sql::Connection *connection = driver.connect("tcp://127.0.0.1:3306", "root", "super_strong_password");
     connection->setSchema("vcupload");
 
     sql::PreparedStatement* statement = connection->prepareStatement("INSERT INTO test(id) VALUES (?)");

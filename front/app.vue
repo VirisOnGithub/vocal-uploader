@@ -9,15 +9,21 @@
         <div>
           <button @click="exportData"
                   class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-5"
-          >Export File</button>
+          >
+            {{ $t('exportFile') }}
+          </button>
         </div>
+      <div>
+        <button @click="setLocale('en')">English</button>
+        <button @click="setLocale('fr')">Français</button>
+      </div>
     </div>
 </template>
 
 <script setup lang="ts">
-
+const { setLocale } = useI18n();
 const iconStyle = 'h-10 w-10';
-const audio = ref<HTMLAudioElement>(null);
+const audio = ref<HTMLAudioElement|null>(null);
 const recording = ref<boolean>(false);
 let mediaRecorder : MediaRecorder | null = null;
 let recordedChunks : Blob[] = [];
@@ -26,7 +32,7 @@ defineShortcuts({
   'r': toggleRecording, // targets the space bar (as strange as it seems???)
   ' ': {
     handler: () => {
-      audio.value.paused ? audio.value.play() : audio.value.pause();
+      audio.value?.paused ? audio.value?.play() : audio.value?.pause();
     }
   }
 })

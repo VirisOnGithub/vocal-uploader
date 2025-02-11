@@ -11,43 +11,54 @@
 <script setup>
 const audio = ref(null);
 let mediaRecorder;
+let recordedChunks = [];
 
 onMounted(() => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         alert('Your browser does not support the MediaRecorder API');
     }
-})
+});
 
-let recordedChunks = [];
-
-function startRecording(){
+function startRecording() {
+    recordedChunks = [];
     navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(stream => {
-                audio.value = document.querySelector('audio');
+        .then(stream => {
+            audio.value = document.querySelector('audio');
+            
+            const options = { mimeType: 'audio/webm;codecs=opus' };
+            
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                console.warn('audio/webm not supported, using default format');
                 mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.ondataavailable = e => {
-                    recordedChunks.push(e.data);
-                };
-                mediaRecorder.start();
-            })
+            } else {
+                mediaRecorder = new MediaRecorder(stream, options);
+            }
+
+            mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
+            mediaRecorder.start();
+        })
+        .catch(error => console.error("Error accessing microphone:", error));
 }
 
-function stopRecording(){
+function stopRecording() {
+    if (!mediaRecorder) return;
     mediaRecorder.stop();
     mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(recordedChunks, { type: 'audio/mp3' });
+        const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
         const audioUrl = URL.createObjectURL(audioBlob);
         audio.value.src = audioUrl;
-        exportData();
-        recordedChunks = [];
-    }
+        setTimeout(() => URL.revokeObjectURL(audioUrl), 1000);
+    };
 }
-function exportData(){
-    const audioBlob = new Blob(recordedChunks, { type: 'audio/mp3' });
+
+function exportData() {
+    if (recordedChunks.length === 0) return;
+    const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
     const audioUrl = URL.createObjectURL(audioBlob);
     const a = document.createElement('a');
     a.href = audioUrl;
-    a.download = 'audio.mp3';
+    a.download = 'audio.webm';
     a.click();
+    URL.revokeObjectURL(audioUrl);
 }
 </script>

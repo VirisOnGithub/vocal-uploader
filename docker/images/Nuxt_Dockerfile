@@ -1,0 +1,5 @@
+FROM node:23
+
+WORKDIR /app
+
+ENTRYPOINT npm i -y && npm run dev

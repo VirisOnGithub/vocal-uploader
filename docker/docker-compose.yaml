@@ -1,0 +1,28 @@
+services:
+  local_db:
+    build:
+      context: images
+      dockerfile: MySQL_Dockerfile
+    ports:
+      - "3306:3306"
+    volumes:
+      - vcupload_sqldata:/var/lib/mysql
+
+  front:
+    build:
+      context: images
+      dockerfile: Nuxt_Dockerfile
+    volumes:
+      - ../front:/app
+    ports:
+      - "3000:3000"
+
+  # back:
+  #   build:
+  #     context: images
+  #     dockerfile: Back_Dockerfile
+  #   volumes:
+  #     - "../back:/app"
+
+volumes:
+  vcupload_sqldata:

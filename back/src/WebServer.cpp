@@ -9,6 +9,8 @@ WebServer::WebServer(std::uint16_t port) {
 
 	server.Get("/hi", [](const httplib::Request& req, httplib::Response& res) { res.set_content("Hello World!", "text/plain"); });
 
+	server.set_mount_point("/files", "files");
+
 	server.listen("127.0.0.1", 5000);
 }
 

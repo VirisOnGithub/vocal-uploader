@@ -2,6 +2,8 @@ add_rules("mode.debug", "mode.release")
 
 -- apt install libmysqlcppconn-dev
 
+set_languages("c++17")
+
 add_requires("cpp-httplib")
 
 target("back")

@@ -7,4 +7,8 @@ DataBase::DataBase(const std::string& url, const std::string& username, const st
 	m_Connection->setSchema(database);
 }
 
+DataBase::~DataBase() {
+	m_Connection->close();
+}
+
 }  // namespace vc

@@ -9,6 +9,8 @@ class DataBase {
   public:
 	DataBase(const std::string& url, const std::string& username, const std::string& password, const std::string& database);
 
+	~DataBase();
+
   private:
 	std::unique_ptr<sql::Connection> m_Connection;
 };

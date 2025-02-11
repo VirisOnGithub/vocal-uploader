@@ -7,6 +7,12 @@ services:
       - "3306:3306"
     volumes:
       - vcupload_sqldata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 15s
+      timeout: 10s
+      retries: 10
 
   front:
     build:
@@ -17,12 +23,15 @@ services:
     ports:
       - "3000:3000"
 
-  # back:
-  #   build:
-  #     context: images
-  #     dockerfile: Back_Dockerfile
-  #   volumes:
-  #     - "../back:/app"
+  back:
+    build:
+      context: ../
+      dockerfile: docker/images/Back_Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      local_db:
+        condition: service_healthy
 
 volumes:
   vcupload_sqldata:

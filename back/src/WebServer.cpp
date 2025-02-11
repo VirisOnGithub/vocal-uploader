@@ -11,7 +11,7 @@ WebServer::WebServer(std::uint16_t port) {
 
 	server.set_mount_point("/files", "files");
 
-	server.listen("127.0.0.1", 5000);
+	server.listen("0.0.0.0", 5000);
 }
 
 }  // namespace vc

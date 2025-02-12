@@ -16,6 +16,6 @@ COPY back /app
 
 RUN rm -rf .xmake build
 
-RUN xmake -y && xmake install -o .
+RUN xmake -y
 
 ENTRYPOINT echo "Starting back server ..." && xmake run

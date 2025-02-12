@@ -32,6 +32,8 @@ services:
     depends_on:
       local_db:
         condition: service_healthy
+    volumes:
+      - ../back/files:/app/files
 
 volumes:
   vcupload_sqldata:

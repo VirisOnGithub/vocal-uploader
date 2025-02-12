@@ -2,4 +2,18 @@ CREATE DATABASE vcupload;
 
 USE vcupload;
 
-CREATE TABLE `Test` (`test` varchar(128));
+CREATE TABLE File (
+  UId VARCHAR(11) PRIMARY KEY,
+  Name VARCHAR(80),
+  CreationDate DATE NOT NULL,
+  GroupId VARCHAR(11)
+);
+
+CREATE TABLE Groupe (
+  UId VARCHAR(11) NOT NULL PRIMARY KEY,
+  AccessToken VARCHAR(40) NOT NULL,
+  CreationDate DATE NOT NULL,
+  ExpirationDate DATE NOT NULL
+);
+
+ALTER TABLE File ADD FOREIGN KEY (GroupID) REFERENCES Groupe (UId); 

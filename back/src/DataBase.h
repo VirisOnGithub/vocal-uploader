@@ -4,6 +4,7 @@
 #include <ctime>
 #include <cppconn/driver.h>
 #include <optional>
+#include <vector>
 
 namespace vc {
 

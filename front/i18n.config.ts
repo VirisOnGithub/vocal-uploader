@@ -3,10 +3,12 @@ export default defineI18nConfig(() => ({
     locale: 'en',
     messages: {
         en: {
-            exportFile: 'Export File'
+            exportFile: 'Export File',
+            language: 'Language',
         },
         fr: {
-            exportFile: 'Exporter le fichier'
+            exportFile: 'Exporter le fichier',
+            language: 'Langue',
         }
     }
 }))

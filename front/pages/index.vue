@@ -13,10 +13,6 @@
             {{ $t('exportFile') }}
           </button>
         </div>
-      <div>
-        <button @click="setLocale('en')">English</button>
-        <button @click="setLocale('fr')">Français</button>
-      </div>
     </div>
 </template>
 

@@ -25,8 +25,8 @@ let mediaRecorder : MediaRecorder | null = null;
 let recordedChunks : Blob[] = [];
 
 defineShortcuts({
-  'r': toggleRecording, // targets the space bar (as strange as it seems???)
-  ' ': {
+  'r': toggleRecording, 
+  ' ': { // targets the space bar (as strange as it seems???)
     handler: () => {
       audio.value?.paused ? audio.value?.play() : audio.value?.pause();
     }

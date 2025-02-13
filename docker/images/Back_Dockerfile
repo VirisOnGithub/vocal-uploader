@@ -18,4 +18,4 @@ RUN rm -rf .xmake build
 
 RUN xmake -y
 
-ENTRYPOINT echo "Starting back server ..." && xmake run
+ENTRYPOINT xmake run

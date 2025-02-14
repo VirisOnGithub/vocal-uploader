@@ -8,7 +8,7 @@
             </div>
             <div class="flex flex-col items-center">
                 <UProgress ref="progressRef" :value="progressCount" />
-                <div>{{ getTimer() }}</div>
+                <div>{{ timerRef }}</div>
             </div>
         </UCard>
     </UContainer>
@@ -22,6 +22,7 @@ const progressRef = ref(null);
 const progressCount = ref(0);
 const isPlaying = ref(false);
 const iconStyle = 'h-10 w-10';
+const timerRef = ref("");
 
 const togglePlay = () => {
     const audio = audioRef.value;
@@ -80,8 +81,11 @@ onMounted(() => {
         audio.addEventListener('play', updateIsPlaying);
         audio.addEventListener('pause', updateIsPlaying);
         // The following lines are necessary to initialize the timers (idk why, but the duration won't casts otherwise)
-        audio.play();
-        audio.pause();
+        // audio.play();
+        // audio.pause();
+        audio.addEventListener('loadedmetadata', () => {
+            timerRef.value = getTimer();
+        });
     }
 });
 

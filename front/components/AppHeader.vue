@@ -1,7 +1,7 @@
 <template>
     <header class="flex justify-between items-center p-4 bg-gray-800 text-white">
         <div>
-            
+            <NuxtLink to="/mol" class="text-white">Mol</NuxtLink>
         </div>
         <h1 class="text-4xl font-bold"><NuxtLink to="/">Vocal Uploader</NuxtLink></h1>
         <div>

@@ -12,7 +12,7 @@
             </div>
         </UCard>
     </UContainer>
-    <audio controls ref="audioRef" :src="`http://localhost:5000/filesraw/${route.params.path}.webm`" class="absolute left-1/2 bottom-0 pb-5 -translate-x-1/2 -translate-y-1/2"></audio>
+    <audio controls ref="audioRef" :src="`http://localhost:5000/filesraw/${route.params.path}.ogg`" class="absolute left-1/2 bottom-0 pb-5 -translate-x-1/2 -translate-y-1/2"></audio>
 </template>
 
 <script setup>

@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     },
     scalar: {
         spec: {
-            url: 'docs/openapi.yaml',
+            url: 'https://raw.githubusercontent.com/VirisOnGithub/vocal-uploader/refs/heads/master/front/docs/openapi.yaml',
         },
         pathRouting: {
             basePath: '/scalar',

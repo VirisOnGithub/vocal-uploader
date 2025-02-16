@@ -18,12 +18,13 @@ DataBase::~DataBase() {
 void DataBase::PrepareStatements() {
 	m_InsertGroup = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement(
 		"INSERT INTO Groupe(`UId`, `AccessToken`, `CreationDate`, `ExpirationDate`) VALUES (?, UUID(), NOW(), ?) RETURNING *;"));
-	m_DeleteGroup = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("DELETE FROM Groupe WHERE UId = ?"));
-	m_InsertFile = std::unique_ptr<sql::PreparedStatement>(
-		m_Connection->prepareStatement("INSERT INTO File(`UId`, `Name`, `CreationDate`, `GroupId`) VALUES (?, ?, NOW(), ?) RETURNING *;"));
-	m_DeleteFile = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("DELETE FROM File WHERE UId = ?"));
-	m_SelectFile = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("SELECT * FROM File WHERE UId = ?"));
-	m_SelectGroupFiles = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("SELECT * FROM File WHERE GroupId = ?"));
+	m_DeleteGroup = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("DELETE FROM Groupe WHERE UId = ?;"));
+	m_InsertFile = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement(
+		"INSERT INTO File(`UId`, `Name`, `CreationDate`, `GroupId`) VALUES (?, ?, NOW(), ?) RETURNING *;"));
+	m_DeleteFile = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("DELETE FROM File WHERE UId = ?;"));
+	m_SelectFile = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("SELECT * FROM File WHERE UId = ?;"));
+	m_SelectGroupFiles =
+		std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("SELECT * FROM File WHERE GroupId = ?;"));
 }
 
 Group DataBase::CreateGroup(int days_duration) {
@@ -110,7 +111,7 @@ std::vector<File> DataBase::GetGroupFiles(const std::string& groupUId) {
 std::optional<File> DataBase::GetFile(const std::string& fileUId) {
 	m_SelectFile->setString(1, fileUId);
 	auto result = std::unique_ptr<sql::ResultSet>(m_SelectFile->executeQuery());
-	if(!result->next());
+	if (!result->next())
 		return {};
 	return std::make_optional<File>({result->getString("UId"), result->getString("Name"), result->getString("GroupId")});
 }

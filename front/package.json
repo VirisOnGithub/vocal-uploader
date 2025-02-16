@@ -13,8 +13,12 @@
     "@nuxt/ui": "^2.21.0",
     "@nuxtjs/i18n": "^9.2.0",
     "@scalar/nuxt": "^0.2.196",
+    "mysql": "^2.18.1",
     "nuxt": "^3.15.4",
     "vue": "latest",
     "vue-router": "latest"
+  },
+  "devDependencies": {
+    "@types/mysql": "^2.15.26"
   }
 }

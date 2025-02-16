@@ -16,13 +16,13 @@
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 const { setLocale, t } = useI18n();
 const iconStyle = 'h-10 w-10';
-const audio = ref<HTMLAudioElement|null>(null);
-const recording = ref<boolean>(false);
-let mediaRecorder : MediaRecorder | null = null;
-let recordedChunks : Blob[] = [];
+const audio = ref(null);
+const recording = ref(false);
+let mediaRecorder = null;
+let recordedChunks = [];
 
 defineShortcuts({
   'r': toggleRecording, 
@@ -80,14 +80,23 @@ function stopRecording() {
     };
 }
 
-function exportData() {
+async function exportData() {
     if (recordedChunks.length === 0) return;
     const audioBlob = new Blob(recordedChunks, { type: 'audio/webm' });
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const a = document.createElement('a');
-    a.href = audioUrl;
-    a.download = 'audio.webm';
-    a.click();
+    // const audioUrl = URL.createObjectURL(audioBlob);
+    // const a = document.createElement('a');
+    // a.href = audioUrl;
+    // a.download = 'audio.webm';
+    // a.click();
+
+    const formData = new FormData();
+    formData.append('audioFile', audioBlob);
+    formData.append('fileName', 'audio.webm');
+    const name = await $fetch('/api/createAudio', {
+        method: 'POST',
+        body: formData
+    })
+    alert(`File ${name} has been created`);
     URL.revokeObjectURL(audioUrl);
 }
 </script>

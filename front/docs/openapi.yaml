@@ -62,12 +62,16 @@ paths:
           multipart/form-data: 
             schema: 
               type: object
+              required:
+                - audioFile
               properties: 
                 fileName:
                   $ref: '#/components/schemas/File/properties/name'
                 audioFile:
                   type: string
                   format: binary
+                groupId:
+                  $ref: '#/components/schemas/Group/properties/uid'
       responses:
         '200':
           description: Successful operation
@@ -75,6 +79,8 @@ paths:
             plain/text:
               schema:
                 $ref: '#/components/schemas/UId'
+        '400':
+          description: The group does not exist
   /files/{fileId}:
     get:
       tags:

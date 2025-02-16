@@ -17,28 +17,30 @@ DataBase::~DataBase() {
 
 void DataBase::PrepareStatements() {
 	m_InsertGroup = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement(
-		"INSERT INTO Groupe(`UId`, `AccessToken`, `CreationDate`, `ExpirationDate`) VALUES (?, UUID(), NOW(), ?) RETURNING *;"));
+		"INSERT INTO Groupe(`UId`, `Name`, `CreationDate`, `ExpirationDate`) VALUES (?, ?, NOW(), ?) RETURNING *;"));
 	m_DeleteGroup = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("DELETE FROM Groupe WHERE UId = ?;"));
 	m_InsertFile = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement(
 		"INSERT INTO File(`UId`, `Name`, `CreationDate`, `GroupId`) VALUES (?, ?, NOW(), ?) RETURNING *;"));
 	m_DeleteFile = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("DELETE FROM File WHERE UId = ?;"));
 	m_SelectFile = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("SELECT * FROM File WHERE UId = ?;"));
+	m_SelectGroup = std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("SELECT * FROM Groupe WHERE UId = ?;"));
 	m_SelectGroupFiles =
 		std::unique_ptr<sql::PreparedStatement>(m_Connection->prepareStatement("SELECT * FROM File WHERE GroupId = ?;"));
 }
 
-Group DataBase::CreateGroup(int days_duration) {
+Group DataBase::CreateGroup(const std::string& groupName, int days_duration) {
 	std::tm* expiration = GetTime();
 	expiration->tm_mday += days_duration;
 	std::mktime(expiration);
 
-	m_InsertGroup->setString(1, GetNewID());				  // uid
-	m_InsertGroup->setDateTime(2, TimeToString(expiration));  // expiration date
+	m_InsertGroup->setString(1, GetNewID());  // uid
+	m_InsertGroup->setString(2, groupName);	  // name
+	m_InsertGroup->setDateTime(3, TimeToString(expiration));
 
 	// TODO: process duplicated key
 	auto result = std::unique_ptr<sql::ResultSet>(m_InsertGroup->executeQuery());
 	result->next();
-	return {result->getString("UId"), result->getString("AccessToken")};
+	return {result->getString("UId"), result->getString("Name")};
 }
 
 void DataBase::DeleteGroup(const std::string& groupUId) {
@@ -100,12 +102,20 @@ File DataBase::CreateFile(const std::string& fileName, const std::string& groupI
 
 std::vector<File> DataBase::GetGroupFiles(const std::string& groupUId) {
 	m_SelectGroupFiles->setString(1, groupUId);
-	auto result = std::unique_ptr<sql::ResultSet>(m_SelectFile->executeQuery());
+	auto result = std::unique_ptr<sql::ResultSet>(m_SelectGroupFiles->executeQuery());
 	std::vector<File> files;
 	while (result->next()) {
 		files.push_back({result->getString("UId"), result->getString("Name"), result->getString("GroupId")});
 	}
 	return files;
+}
+
+std::optional<Group> DataBase::GetGroup(const std::string& groupUId) {
+	m_SelectGroup->setString(1, groupUId);
+	auto result = std::unique_ptr<sql::ResultSet>(m_SelectGroup->executeQuery());
+	if (!result->next())
+		return {};
+	return std::make_optional<Group>({result->getString("UId"), result->getString("Name")});
 }
 
 std::optional<File> DataBase::GetFile(const std::string& fileUId) {

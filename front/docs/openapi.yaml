@@ -1,0 +1,158 @@
+openapi: 3.0.3
+info:
+  title: Vocal Uploader Back API 1.0
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: local debug
+tags:
+  - name: File
+    description: Operations about files
+  - name: Group
+    description: Operations about groups
+paths:
+  /groups:
+    post:
+      tags:
+        - Group
+      summary: Create a group
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/Group/properties/name'
+      description: Create a new group and returns its id
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            plain/text:
+              schema:
+                $ref: '#/components/schemas/Group/properties/uid'
+  /groups/{groupId}:
+    get:
+      tags:
+        - Group
+      summary: Get group info
+      parameters:
+        - name: groupId
+          in: path
+          description: Id of group to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/UId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '404':
+          description: The group does not exist
+  /files:
+    post:
+      tags:
+        - File
+      summary: Create a file
+      description: Compress audio file and return its id
+      requestBody:
+        content:
+          multipart/form-data: 
+            schema: 
+              type: object
+              properties: 
+                fileName:
+                  $ref: '#/components/schemas/File/properties/name'
+                audioFile:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            plain/text:
+              schema:
+                $ref: '#/components/schemas/UId'
+  /files/{fileId}:
+    get:
+      tags:
+        - File
+      summary: Get file info
+      parameters:
+        - name: fileId
+          in: path
+          description: Id of file to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/UId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/File'
+        '404':
+          description: The file does not exist
+  /filesraw/{fileId}:
+    get:
+      tags:
+        - File
+      summary: Returns raw audio file
+      parameters:
+        - name: fileId
+          in: path
+          description: Id of file to return
+          required: true
+          schema:
+            $ref: '#/components/schemas/File/properties/uid'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+                example: GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQRChYE
+        '404':
+          description: The file does not exist
+          
+components:
+  schemas:
+    UId:
+      type: string
+      description: 11 characters id
+      example: MURua52_YPg
+    File:
+      type: object
+      required:
+        - uid
+        - name
+      properties:
+        uid:
+          $ref: '#/components/schemas/UId'
+        name:
+          type: string
+          example: My Ordinary Life
+        groupId:
+          $ref: '#/components/schemas/UId'
+    Group:
+      type: object
+      required:
+        - uid
+        - name
+        - files
+      properties:
+        uid:
+          $ref: '#/components/schemas/UId'
+        name:
+          type: string
+          example: New Group
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/File'
+        

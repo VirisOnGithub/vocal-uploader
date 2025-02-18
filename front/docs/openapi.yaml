@@ -51,6 +51,8 @@ paths:
                 $ref: '#/components/schemas/Group'
         '404':
           description: The group does not exist
+        '406':
+          description: The file provided is not an valid audio file
   /files:
     post:
       tags:

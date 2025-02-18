@@ -9,7 +9,7 @@ class FileSystem {
 
 	bool FileExists(const std::string& a_FileName);
 	void DeleteFile(const std::string& a_FileName);
-	void WriteFile(const std::string& a_FileName, const std::string& a_Data);
+	bool WriteFile(const std::string& a_FileName, const std::string& a_Data);
 	void ReadFile(const std::string& a_FileName);
 
 	const std::string& GetDirectory() {

@@ -102,7 +102,11 @@ WebServer::WebServer(std::uint16_t port, FileSystem& a_FileSystem, DataBase& a_D
 		}
 
 		File dbFile = m_DataBase.CreateFile(StripExtension(fileName), groupId);
-		m_FileSystem.WriteFile(dbFile.m_FileUId + FILE_EXTENSION, file.content);
+		if(!m_FileSystem.WriteFile(dbFile.m_FileUId + FILE_EXTENSION, file.content)){
+			res.status = httplib::StatusCode::NotAcceptable_406;
+			res.set_content("The file provided is not acceptable", "text/plain");
+			return httplib::Server::HandlerResponse::Handled;
+		}
 
 		res.set_content(dbFile.m_FileUId, "text/plain");
 		return httplib::Server::HandlerResponse::Handled;

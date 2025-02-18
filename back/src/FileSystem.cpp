@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <optional>
 #include <stx/stx-execpipe.h>
 
 namespace fs = std::filesystem;
@@ -20,7 +19,7 @@ void FileSystem::DeleteFile(const std::string& a_FileName) {
 	fs::remove(directory / a_FileName);
 }
 
-static std::optional<std::string> CompressAudioData(const std::string& a_Data) {
+std::optional<std::string> FileSystem::CompressAudioData(const std::string& a_Data) {
 	stx::ExecPipe ep;
 
 	ep.set_input_string(&a_Data);
@@ -44,12 +43,8 @@ static std::optional<std::string> CompressAudioData(const std::string& a_Data) {
 
 bool FileSystem::WriteFile(const std::string& a_FileName, const std::string& a_Data) {
 	fs::path directory{m_Directory};
-	auto audioData = CompressAudioData(a_Data);
-	if (!audioData.has_value()) {
-		return false;
-	}
 	std::ofstream file{directory / a_FileName};
-	file << audioData.value();
+	file << a_Data;
 	return true;
 }
 

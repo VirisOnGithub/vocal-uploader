@@ -101,12 +101,15 @@ WebServer::WebServer(std::uint16_t port, FileSystem& a_FileSystem, DataBase& a_D
 			}
 		}
 
-		File dbFile = m_DataBase.CreateFile(StripExtension(fileName), groupId);
-		if(!m_FileSystem.WriteFile(dbFile.m_FileUId + FILE_EXTENSION, file.content)){
+		auto compressedData = FileSystem::CompressAudioData(file.content);
+		if (!compressedData.has_value()) {
 			res.status = httplib::StatusCode::NotAcceptable_406;
 			res.set_content("The file provided is not acceptable", "text/plain");
 			return httplib::Server::HandlerResponse::Handled;
 		}
+
+		File dbFile = m_DataBase.CreateFile(StripExtension(fileName), groupId);
+		m_FileSystem.WriteFile(dbFile.m_FileUId + FILE_EXTENSION, compressedData.value());
 
 		res.set_content(dbFile.m_FileUId, "text/plain");
 		return httplib::Server::HandlerResponse::Handled;

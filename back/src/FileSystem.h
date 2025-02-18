@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <optional>
 
 namespace vc {
 class FileSystem {
@@ -11,6 +12,8 @@ class FileSystem {
 	void DeleteFile(const std::string& a_FileName);
 	bool WriteFile(const std::string& a_FileName, const std::string& a_Data);
 	void ReadFile(const std::string& a_FileName);
+
+	static std::optional<std::string> CompressAudioData(const std::string& a_Data);
 
 	const std::string& GetDirectory() {
 		return m_Directory;
